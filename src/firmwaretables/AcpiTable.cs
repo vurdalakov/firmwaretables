@@ -37,6 +37,8 @@
                 throw new ArgumentException("Invalid ACPI data");
             }
 
+            this.RawData = data;
+
             this.Signature = Encoding.ASCII.GetString(data, 0, 4);
             this.Length = BitConverter.ToUInt32(data, 4);
             this.Revision = data[8];
@@ -53,6 +55,8 @@
 
             this.ChecksumIsValid = ValidateChecksum(data);
         }
+
+        public Byte[] RawData { get; private set; }
 
         public String Signature { get; private set; }
         public UInt32 Length { get; private set; }

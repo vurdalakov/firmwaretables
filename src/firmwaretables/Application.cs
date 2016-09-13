@@ -89,6 +89,22 @@
                     }
                 }
             }
+#if false
+            else if (_commandLineParser.IsOptionSet("i", "info"))
+            {
+                var tableIds = FirmwareTables.EnumFirmwareTables(FirmwareTableType.Acpi);
+
+                foreach (var tableId in tableIds)
+                {
+                    var acpiTable = FirmwareTables.GetAcpiTable(tableId);
+                    switch (acpiTable.Signature.ToUpper())
+                    {
+                        case "DBGP":
+                            break;
+                    }
+                }
+            }
+#endif
             else
             {
                 Help();
@@ -99,13 +115,11 @@
 
         private void DecodeAcpiTable(UInt32 tableId)
         {
-            var tableType = (UInt32)FirmwareTableType.Acpi;
-            Console.WriteLine("=== ACPI table 0x{0:X8} '{1}'", tableId, FirmwareTables.UInt32ToString(tableId));
+            var tableIdString = FirmwareTables.UInt32ToString(tableId);
+            Console.WriteLine("=== '{0}' ACPI table 0x{1:X8} or '{2}'", tableIdString.Reverse(), tableId, tableIdString);
 
-            var data = FirmwareTables.GetFirmwareTable(tableType, tableId);
-            Console.WriteLine("Table size: {0:N0} bytes", data.Length);
-
-            var acpiTable = new AcpiTable(data);
+            var acpiTable = FirmwareTables.GetAcpiTable(tableId);
+            Console.WriteLine("Table size: {0:N0} bytes", acpiTable.RawData.Length);
 
             Console.WriteLine("--- ACPI table header");
             Console.WriteLine("Signature:       '{0}'", acpiTable.Signature);
