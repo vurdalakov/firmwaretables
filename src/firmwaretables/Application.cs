@@ -179,9 +179,9 @@
         protected override void Help()
         {
             Console.WriteLine("FirmwareTables {0} | https://github.com/vurdalakov/firmwaretables\n", ApplicationVersion);
-            Console.WriteLine("Lists system firmware tables and saves them to binary files.\n");
-            Console.WriteLine("Usage:\n\tfirmwaretables <-list | -all | -save <table type> <table id> [filename]> [-silent]\n");
-            Console.WriteLine("Commands:\n\t-l - list available system firmware tables\n\t-a - save all system firmware tables to files\n\t-s - save specific system firmware table to file\n");
+            Console.WriteLine("Lists, extracts and decodes system firmware tables.\n");
+            Console.WriteLine("Usage:\n\tfirmwaretables <-list | -all | -save | -decode <table type> <table id> [filename]> [-silent]\n");
+            Console.WriteLine("Commands:\n\t-l - list available system firmware tables\n\t-a - save all system firmware tables to files\n\t-s - save specific system firmware table to file\n\t-d - decode specific system firmware table\n");
             Console.WriteLine("Options:\n\t-silent - no error messages are shown; check exit code\n");
             Console.WriteLine("Exit codes:\n\t0 - operation succeeded\n\t1 - operation failed\n\t-1 - invalid command line syntax\n");
 
