@@ -147,7 +147,7 @@
         private void PrintArray(Byte[] array)
         {
             const int rowLength = 16;
-            var rows = array.Length / rowLength + 1;
+            var rows = (array.Length - 1) / rowLength + 1;
             var first = 0;
             var index = 0;
             for (var row = 1; row <= rows; row++)
