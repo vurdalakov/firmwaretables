@@ -1,21 +1,21 @@
 # FirmwareTables
 
-#### Overview
+### Overview
 
 A set of classes and command line tools that work with system firmware tables (ACPI, SMBIOS).
 
 Distributed under the [MIT license](http://opensource.org/licenses/MIT).
 
-#### `FirmwareTables` class
+### `FirmwareTables` class
 
 `FirmwareTables` class enumerates system firmware tables and gets them in binary form, using [EnumSystemFirmwareTables](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724259.aspx) and [GetSystemFirmwareTable](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724379.aspx) Windows API functions.
 
 Example 1: System firmware tables enumaration
 
 ```
-foreach (FirmwareTables.TableType tableType in Enum.GetValues(typeof(FirmwareTables.TableType)))
+foreach (FirmwareTableType tableType in Enum.GetValues(typeof(FirmwareTableType)))
 {
-    var tableIds = FirmwareTables.EnumFirmwareTables(tableType);
+    var tableIds =  EnumFirmwareTables(tableType);
 
     foreach (var tableId in tableIds)
     {
@@ -32,7 +32,21 @@ var data = FirmwareTables.GetFirmwareTable("ACPI", "MDSM");
 File.WriteAllBytes("Acpi-Windows-License-Key.bin", data);
 ```
 
-#### `firmwaretables` tool
+### `AcpiTable` class
+
+`AcpiTable` class parses a given ACPI table binary and provides access to ACPI table header fields and table payload.
+
+Example 1: Extract OEM Windows product key from ACPI MSDM table
+
+```
+var table = FirmwareTables.GetAcpiTable("MDSM");
+var productKeyLength = (int)table.GetPayloadUInt32(16);
+var productKey = table.GetPayloadString(20, productKeyLength);
+
+Console.WriteLine("OEM Windows product key: '{0}'", productKey);
+```
+
+### `firmwaretables` tool
 
 **FirmwareTables** is a command-line C# program that lists system firmware tables and saves them to binary files.
 
@@ -44,6 +58,7 @@ Syntax:
 firmwaretables -list # lists available system firmware tables
 firmwaretables -save <table type> <table id> [filename] [-silent] # saves specific system firmware table to binary file
 firmwaretables -all [-silent] # saves all system firmware tables to binary files
+firmwaretables -decode <table type> <table id> # decodes given table
 ```
 
 `table type` and `table id` can be a string (e.g. `ACPI`) or a hex number (e.g. `0x52534D42`).
@@ -75,4 +90,11 @@ Example 3: Save all firmware tables to binary files.
 ```
 firmwaretables -all"
 firmwaretables -a -silent
+```
+
+Example 4: Decode specific firmware table.
+
+```
+firmwaretables -decode ACPI MDSM
+firmwaretables -d -0x52534D42 0x00000000
 ```

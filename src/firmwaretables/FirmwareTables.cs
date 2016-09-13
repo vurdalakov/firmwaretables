@@ -5,16 +5,16 @@
     using System.ComponentModel;
     using System.Runtime.InteropServices;
 
+    public enum FirmwareTableType : UInt32
+    {
+        Acpi = 0x41435049,
+        Firm = 0x4649524D,
+        Rsmb = 0x52534D42
+    }
+
     public static class FirmwareTables
     {
-        public enum TableType : UInt32
-        {
-            Acpi = 0x41435049,
-            Firm = 0x4649524D,
-            Rsmb = 0x52534D42
-        }
-
-        public static UInt32[] EnumFirmwareTables(TableType tableType)
+        public static UInt32[] EnumFirmwareTables(FirmwareTableType tableType)
         {
             return EnumFirmwareTables((UInt32)tableType);
         }
@@ -53,12 +53,12 @@
             return firmwareTables.ToArray();
         }
 
-        public static Byte[] GetFirmwareTable(TableType tableType, String tableId)
+        public static Byte[] GetFirmwareTable(FirmwareTableType tableType, String tableId)
         {
             return GetFirmwareTable((UInt32)tableType, StringToUInt32(tableId));
         }
 
-        public static Byte[] GetFirmwareTable(TableType tableType, UInt32 tableId)
+        public static Byte[] GetFirmwareTable(FirmwareTableType tableType, UInt32 tableId)
         {
             return GetFirmwareTable((UInt32)tableType, tableId);
         }
@@ -88,6 +88,17 @@
             }
 
             return ReadByteArray(buffer, 0, (Int32)bufferSize);
+        }
+
+        public static AcpiTable GetAcpiTable(String tableId)
+        {
+            return GetAcpiTable(StringToUInt32(tableId));
+        }
+
+        public static AcpiTable GetAcpiTable(UInt32 tableId)
+        {
+            var data = FirmwareTables.GetFirmwareTable(FirmwareTableType.Acpi, tableId);
+            return new AcpiTable(data);
         }
 
         public static UInt32 StringToUInt32(String tableType)
